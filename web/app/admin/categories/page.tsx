@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import AdminLayout from '../layout';
 
 type Category = {
   id: number;
@@ -33,7 +32,7 @@ export default function AdminCategoryPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <h1 className="text-2xl font-bold">Manage Categories</h1>
       <Link href="/admin/categories/form">Add New Category</Link>
       <ul>
@@ -45,6 +44,6 @@ export default function AdminCategoryPage() {
           </li>
         ))}
       </ul>
-    </AdminLayout>
+    </>
   );
 }

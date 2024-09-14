@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import AdminLayout from '../layout';
 
 type Product = {
   id: number;
@@ -33,7 +32,7 @@ export default function AdminProductPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <h1 className="text-2xl font-bold">Manage Products</h1>
       <Link href="/admin/products/form">Add New Product</Link>
       <ul>
@@ -45,6 +44,6 @@ export default function AdminProductPage() {
           </li>
         ))}
       </ul>
-    </AdminLayout>
+    </>
   );
 }

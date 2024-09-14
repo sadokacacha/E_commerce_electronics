@@ -6,7 +6,11 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
         ('client', 'Client'),
     )
+    email = models.EmailField(unique=True)  # Make email unique
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='client')
 
+    USERNAME_FIELD = 'email'  # Use email to log in
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
     def __str__(self):
-        return self.username
+        return self.email

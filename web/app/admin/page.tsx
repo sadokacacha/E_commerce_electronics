@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import AdminLayout from './layout';
 import Link from 'next/link';
 
 export default function AdminPage() {
@@ -50,7 +49,7 @@ export default function AdminPage() {
   }
 
   return (
-    <AdminLayout>
+    <div>
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
       <div>
         <Link href="/admin/products">Manage Products</Link>
@@ -58,6 +57,6 @@ export default function AdminPage() {
       <div>
         <Link href="/admin/categories">Manage Categories</Link>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
