@@ -3,10 +3,13 @@
 
 import { useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie'; // Import js-cookie for handling cookies
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,8 +18,12 @@ export default function LoginPage() {
         username,
         password
       });
-      localStorage.setItem('token', res.data.access);
+      // Store tokens in secure cookies
+      Cookies.set('access', res.data.access, { secure: true, sameSite: 'Strict' });
+      Cookies.set('refresh', res.data.refresh, { secure: true, sameSite: 'Strict' });
+
       alert('Login successful');
+      router.push('/'); // Redirect to the home page after login
     } catch (err) {
       alert('Login failed');
     }
