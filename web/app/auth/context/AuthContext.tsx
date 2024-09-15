@@ -5,11 +5,12 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
+// Define User and AuthContext types
 interface User {
   first_name: string;
   last_name: string;
   email: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'client';
 }
 
 interface AuthContextProps {
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // Function to log in
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.post('http://localhost:8000/api/token/', {
@@ -35,73 +37,75 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       Cookies.set('access', response.data.access);
       Cookies.set('refresh', response.data.refresh);
-      await fetchUser();
+      await fetchUser();  // Fetch user data after login
     } catch (error) {
       console.error('Login failed', error);
     }
   };
 
-  const signup = async (first_name: string, last_name: string, email: string, password: string) => {
+  // Function to sign up
+  const signup = async (firstName: string, lastName: string, email: string, password: string) => {
     try {
-      await axios.post('http://localhost:8000/api/register/', {
-        first_name,
-        last_name,
-        email,
-        password,
-      });
-      await login(email, password);
+        const response = await axios.post('http://localhost:8000/api/register/', {
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            password,
+        });
+        console.log('Signup successful:', response.data);
     } catch (error) {
-      console.error('Signup failed', error);
+        console.error('Signup failed:', error);
     }
-  };
+};
 
+  // Function to log out
   const logout = () => {
     Cookies.remove('access');
     Cookies.remove('refresh');
     setUser(null);
-    router.push('/');
+    router.push('/');  // Redirect to home page after logout
   };
 
+  // Function to fetch user data
   const fetchUser = async () => {
-    const accessToken = Cookies.get('access');
     const refreshToken = Cookies.get('refresh');
 
-    if (!accessToken && refreshToken) {
+    if (refreshToken) {
       try {
         const refreshResponse = await axios.post('http://localhost:8000/api/token/refresh/', {
           refresh: refreshToken,
         });
-        Cookies.set('access', refreshResponse.data.access); // Update access token
-      } catch (refreshError) {
-        console.error('Refresh token expired or invalid', refreshError);
-        logout();
+        Cookies.set('access', refreshResponse.data.access);  // Update access token
+      } catch (error) {
+        console.error('Refresh token expired or invalid', error);
+        logout();  // Logout if refresh token fails
         return;
       }
     }
 
-    try {
-      const updatedAccessToken = Cookies.get('access');
-      if (updatedAccessToken) {
-        const response = await axios.get('http://localhost:8000/api/users/', {
+    const accessToken = Cookies.get('access');
+
+    if (accessToken) {
+      try {
+        const response = await axios.get('http://localhost:8000/api/user/', {
           headers: {
-            Authorization: `Bearer ${updatedAccessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         });
         setUser(response.data);
-      } else {
-        throw new Error('Access token missing after refresh');
+      } catch (error) {
+        console.error('Failed to fetch user', error);
+        logout();  // Logout if fetch user fails
       }
-    } catch (error) {
-      console.error('Failed to fetch user', error);
-      setUser(null);
-      logout();
-    } finally {
-      setLoading(false);
+    } else {
+      logout();  // If access token is missing, logout
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchUser();
+    fetchUser();  // Fetch user on component mount
   }, []);
 
   return (

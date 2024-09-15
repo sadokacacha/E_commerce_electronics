@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState, FormEvent } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useState, FormEvent } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const { signup } = useAuth();
-  const [firstName, setFirstName] = useState<string>('');  // First name input
-  const [lastName, setLastName] = useState<string>('');    // Last name input
-  const [email, setEmail] = useState<string>('');          // Email input
-  const [password, setPassword] = useState<string>('');    // Password input
+  const [firstName, setFirstName] = useState<string>(""); // First name input
+  const [lastName, setLastName] = useState<string>(""); // Last name input
+  const [email, setEmail] = useState<string>(""); // Email input
+  const [password, setPassword] = useState<string>(""); // Password input
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signup(firstName, lastName, email, password);  // Pass all four arguments
-    router.push('/');
+    await signup(firstName, lastName, email, password); // Pass all four arguments
+    router.push("/");
   };
 
   return (
@@ -48,7 +48,10 @@ export default function Signup() {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
         Sign Up
       </button>
     </form>

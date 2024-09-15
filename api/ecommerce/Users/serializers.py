@@ -10,21 +10,19 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['role'] = user.role  # Add the user's role to the token
+        token['role'] = user.role
         return token
 
     def validate(self, attrs):
         credentials = {
             'email': attrs.get('email'),
-            'password': attrs.get('password'),
+            'password': attrs.get('password')
         }
         user = authenticate(**credentials)
 
         if user:
             data = super().validate(attrs)
             data.update({
-                'first_name': user.first_name,
-                'last_name': user.last_name,
                 'email': user.email,
                 'role': user.role,
             })
@@ -32,13 +30,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         else:
             raise serializers.ValidationError('No active account found with the given credentials')
         
+
+ # UserSerializer for returning user details
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'first_name', 'last_name', 'email', 'role']
+
 # RegisterSerializer for user registration
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'password']  # Removed username
+        fields = ['first_name', 'last_name', 'email', 'password']
 
     def create(self, validated_data):
         user = CustomUser.objects.create(
@@ -50,11 +55,3 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-    
-
-
-# UserSerializer for returning user details
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'first_name', 'last_name', 'email', 'role']
