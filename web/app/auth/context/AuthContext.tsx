@@ -52,14 +52,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             email,
             password,
         });
-        console.log('Signup successful:', response.data);
+
+        // After successful signup, automatically log in the user
+        await login(email, password); 
+        console.log('Signup and login successful:', response.data);
     } catch (error: unknown) {
-        // Check if the error is an AxiosError
         if (axios.isAxiosError(error)) {
-            // Axios-specific error
             console.error('Signup failed:', error.response?.data || error.message);
         } else {
-            // Non-Axios error (just in case)
             console.error('An unexpected error occurred:', error);
         }
     }
