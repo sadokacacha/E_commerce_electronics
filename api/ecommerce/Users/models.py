@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
         ('client', 'Client'),
     )
+    username = None 
     email = models.EmailField(unique=True)  # Make email unique
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='client')
 

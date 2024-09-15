@@ -3,6 +3,7 @@ from .models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer, CustomTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
 
 
 # Custom Token View for JWT
@@ -15,6 +16,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]  # Allow anyone to register (unauthenticated users)
 
 # User List View for listing users (requires authentication)
 class UserListView(generics.ListAPIView):

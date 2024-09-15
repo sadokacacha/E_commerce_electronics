@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import axios , { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
@@ -53,11 +53,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             password,
         });
         console.log('Signup successful:', response.data);
-    } catch (error) {
-        console.error('Signup failed:', error);
+    } catch (error: unknown) {
+        // Check if the error is an AxiosError
+        if (axios.isAxiosError(error)) {
+            // Axios-specific error
+            console.error('Signup failed:', error.response?.data || error.message);
+        } else {
+            // Non-Axios error (just in case)
+            console.error('An unexpected error occurred:', error);
+        }
     }
 };
-
   // Function to log out
   const logout = () => {
     Cookies.remove('access');
