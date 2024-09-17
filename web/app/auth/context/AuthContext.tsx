@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -36,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       Cookies.set('access', response.data.access);
       Cookies.set('refresh', response.data.refresh);
-      await fetchUser();
+      await fetchUser();  // Fetch user after login
     } catch (error) {
       console.error('Login failed', error);
       throw error;
@@ -52,8 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password,
         phone,
       });
-      await login(email, password);
-      console.log('Signup and login successful:', response.data);
+      await login(email, password);  // Automatically log in after signup
     } catch (error) {
       console.error('Signup failed:', error);
       throw error;
@@ -76,18 +74,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log('Fetched user data:', response.data); // Add this line for debugging
         setUser(response.data);
       } catch (error) {
         console.error('Failed to fetch user', error);
-        logout();
+        logout();  // Logout if token fetch fails
       }
     } else {
       setUser(null);
     }
-    setLoading(false);
+    setLoading(false);  // Loading finished after user fetch
   };
-  
+
   useEffect(() => {
     fetchUser();
   }, []);

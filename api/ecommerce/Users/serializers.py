@@ -10,7 +10,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['role'] = user.role
+        token['role'] = user.role  # Add the user role in the JWT
         return token
 
     def validate(self, attrs):
@@ -24,12 +24,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data = super().validate(attrs)
             data.update({
                 'email': user.email,
-                'role': user.role,
+                'role': user.role,  # Add user role to the response
             })
             return data
         else:
             raise serializers.ValidationError('No active account found with the given credentials')
-
+        
  # UserSerializer for returning user detailsclass UserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
