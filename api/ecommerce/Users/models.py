@@ -1,9 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import BaseUserManager
-
 from django.db import models
-
-
+from django.contrib.auth.models import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -18,6 +15,8 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'admin')  # Set role to admin
+
 
         if not email:
             raise ValueError('The Email field must be set for superuser')
@@ -35,12 +34,13 @@ class CustomUser(AbstractUser):
     )
     username = None  
     email = models.EmailField(unique=True)  # Make email unique
+    phone = models.CharField(max_length=15, blank=True, null=True)  # Add phone number field
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='client')
 
     USERNAME_FIELD = 'email'  # Use email to log in
-    REQUIRED_FIELDS = ['first_name', 'last_name']  # No username required, just first and last name
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    objects = CustomUserManager()  # Use the custom manager
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.email

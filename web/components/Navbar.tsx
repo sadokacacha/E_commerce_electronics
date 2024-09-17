@@ -3,12 +3,6 @@
 import Link from "next/link";
 import { useAuth } from "../app/auth/context/AuthContext";
 
-interface User {
-  username: string;
-  email: string;
-  role: "admin" | "client";
-}
-
 export default function Navbar() {
   const { user, logout, loading } = useAuth();
 
@@ -36,16 +30,19 @@ export default function Navbar() {
         ) : user.role === "client" ? (
           <>
             <li>
+              <Link href="/orders">Your Orders</Link>
+            </li>
+            <li>
               <Link href="/cart">Your Cart</Link>
             </li>
-            {/* Add other client-specific links here */}
+            {/* Add other admin-specific links here */}
           </>
         ) : user.role === "admin" ? (
           <>
             <li>
               <Link href="/admin">Admin Dashboard</Link>
             </li>
-            {/* Add other admin-specific links here */}
+            {/* Add other client-specific links here */}
           </>
         ) : null}
 
