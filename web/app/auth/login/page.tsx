@@ -45,7 +45,7 @@ export default function Login() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="your Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -84,6 +84,12 @@ export default function Login() {
               className="border border-orange-500 text-orange-500 hover:bg-orange-100 w-full"
             >
               Login with Google
+            </Button>
+            <Button
+              variant="outline"
+              className="border border-blue-500 text-blue-500 hover:bg-blue-100 w-full"
+            >
+              Login with facebook
             </Button>
           </form>
           <div className="mt-4 text-center text-sm text-gray-700">

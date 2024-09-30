@@ -3,19 +3,24 @@
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, BarChart3, Package, Tag } from "lucide-react";
+import { AlertCircle, Package, Tag } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function AdminPage() {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [topProducts, setTopProducts] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(true); // Set to true for design testing
+  const [loading, setLoading] = useState(false); // Set to false for design testing
+  const [topProducts, setTopProducts] = useState([
+    { name: 'Product A', sales: 400 },
+    { name: 'Product B', sales: 300 },
+    { name: 'Product C', sales: 200 },
+    { name: 'Product D', sales: 100 },
+  ]);
   const router = useRouter();
 
+  // Simulate loading for design testing
   useEffect(() => {
     const accessToken = Cookies.get('access');
     if (!accessToken) {
@@ -23,33 +28,8 @@ export default function AdminPage() {
       return;
     }
 
-    axios
-      .get('http://localhost:8000/api/user/', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        if (response.data.role !== 'admin') {
-          router.push('/');
-        } else {
-          setIsAdmin(true);
-          // Fetch top products data
-          return axios.get('http://localhost:8000/api/top-products/');
-        }
-      })
-      .then((topProductsResponse) => {
-        if (topProductsResponse) {
-          setTopProducts(topProductsResponse.data);
-        }
-      })
-      .catch((error) => {
-        console.error('Error verifying admin role or fetching data', error);
-        router.push('/');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // Mock admin check
+    setIsAdmin(true); // Assuming the user is an admin
   }, [router]);
 
   if (loading) {
@@ -57,7 +37,7 @@ export default function AdminPage() {
   }
 
   if (!isAdmin) {
-    return null;
+    return null; // This could be an error message or redirect
   }
 
   return (
